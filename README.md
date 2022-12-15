@@ -2,53 +2,66 @@
 
 ## Overview
 
-Cheeck uptime, status applications supervisord
+Check uptime, status applications in supervisord
 
-
+For Zabbix 5.4 and higher. 
 
 ## Author
 
-Dmitriy (https://github.com/dslimp)
+dslimp (https://github.com/dslimp)
 
 ## Macros used
 
-|Name|Description|Default|Type|
-|----|-----------|-------|----|
-|`{$SUPERVISOR_SOCKET}`| Path to supervisord docket | /var/run/supervisor.sock | Text macro |
+`{$SUPERVISOR_SOCKET}` Path to supervisor socket. Default  /var/run/supervisor.sock 
 
 ## Template links
-- [zabbix_template_supervisord.xml](zabbix_template_supervisord.xml)
+- [zabbix_template_supervisor.xml](zabbix_template_supervisor.xml)
 
 ## Script Links
-- [script/supervisord.py](script/supervisord.py)
+- [script/supervisor.py](script/supervisor.py)
 
-## Instructions
-- Download the [script/supervisord.py](script/supervisord.py) script from this repository and place it in zabbix script directory
-- Run `chmod +x supervisord.py` to make the script executable
-- Test executing the script from the CLI of your Zabbix server by running the python script inputing the command and socket  like `./supervisord.py discovery /var/run/supervisor.sock`
-- Make sure the output is either applications and have not error
-- Download and install [supervisord.conf](supervisord.conf) to zabbix_agent.d directory
-- Once the script works OK, download the[zabbix_template_supervisord.xml](zabbix_template_supervisord.xml) Zabbix template from this repository and import it into your Zabbix server
+## Setup
+- Download the [script/supervisor.py](script/supervisor.py) script from this repository and place it in zabbix script directory
+- Run `chmod +x supervisor.py` to make the script executable
+- Test executing the script from the CLI of your Zabbix server by running the python script inputing the command and socket like `./supervisor.py discovery /var/run/supervisor.sock`
+- Make sure the output is either applications and haven'tß error
+- Download and install [supervisor.conf](supervisor.conf) to zabbix_agent.d config directory
+- Once the script works OK, download the[zabbix_template_supervisor.xml](zabbix_template_supervisor.xml) Zabbix template from this repository and import it into your Zabbix server
 - Apply the imported template to the host
 - Check the latest data to make sure you are getting the proper value from the script
 
-## Discovery rules
-
-supervisord_discovery 
-
 ## Items collected
 
-|Name|Description|Type|Key and additional info|
-|----|-----------|----|----|
-| Update supervisor raw data | Collected data | `External check` | supervisor_raw[["{HOSTNAME}", "{$GITLAB_TOKEN}"] |
+supervisor raw data - all data about processes in JSON
 
+## Discovery
 
-## Triggers
+supervisor discovery
 
-|Name|Description|Expression|Priority|
-|----|-----------|----------|--------|
-| 	No data supervisor 10 min | A non-critical software update is available | `{gitlab.verticalcomputers.com:gitlab_update_check.sh["{HOSTNAME}", "{$GITLAB_TOKEN}"].str(up-to-date)}<>1` | Warning |
-| Supervisor error get status | A critical software update is available | `{gitlab.verticalcomputers.com:gitlab_update_check.sh["{HOSTNAME}", "{$GITLAB_TOKEN}"].str(update asap)}=1` | High |
+# Item prototypes
+
+Service {#SUPERVISOR_PROCESS_NAME} now
+
+Service {#SUPERVISOR_PROCESS_NAME} spawnerr
+
+Service {#SUPERVISOR_PROCESS_NAME} start
+
+Service {#SUPERVISOR_PROCESS_NAME} statename
+
+Service {#SUPERVISOR_PROCESS_NAME} stop
+
+Service {#SUPERVISOR_PROCESS_NAME} uptime
+
+All item dependent from supervisor raw data
+
+# Trigger prototypes
+
 Service {#SUPERVISOR_PROCESS_NAME} fail
+
 Service {#SUPERVISOR_PROCESS_NAME} inifinity restart
-Service {#SUPERVISOR_PROCESS_NAME} uptime < 60 sec		
+
+Service {#SUPERVISOR_PROCESS_NAME} uptime < 60 sec	
+
+# Trigger
+
+No data supervisor 10 min 
