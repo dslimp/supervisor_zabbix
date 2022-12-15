@@ -11,8 +11,8 @@
     <templates>
         <template>
             <uuid>5c967ccc3c294413a0e14ffc07e53b58</uuid>
-            <template>supervisord</template>
-            <name>supervisord</name>
+            <template>supervisor</template>
+            <name>supervisor</name>
             <groups>
                 <group>
                     <name>Supervisor</name>
